@@ -27,8 +27,7 @@ jobs:
       - name: Build API Docs
         run: |
           uv run pdoc -o docs/api src/agentic_framework
-          uv run python -m markdown2 docs/index.md > docs/index.html
-          uv run python -m markdown2 docs/publishing.md > docs/publishing.html
+          uv run python docs/build.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
