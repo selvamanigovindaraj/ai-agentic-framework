@@ -239,10 +239,13 @@
 
 <h2 id="architecture">🏗️ Architecture</h2>
 
-<p>The framework is built around the <strong>Agent</strong> core, which orchestrates the interaction between:
-1.  <strong>LLM Client</strong>: The brain (e.g., OpenAI GPT-4).
-2.  <strong>Memory</strong>: The context (Short-term session history + Long-term storage).
-3.  <strong>Tools</strong>: The capabilities (Calculator, API calls, Custom functions).</p>
+<p>The framework is built around the <strong>Agent</strong> core, which orchestrates the interaction between:</p>
+
+<ul>
+<li><strong>LLM Client</strong>: The brain (e.g., OpenAI GPT-4).</li>
+<li><strong>Memory</strong>: The context (Short-term session history + Long-term storage).</li>
+<li><strong>Tools</strong>: The capabilities (Calculator, API calls, Custom functions).</li>
+</ul>
 
 <pre class="mermaid-pre"><div class="mermaid">graph TD
     User[User/App] --&gt; Agent
@@ -450,7 +453,18 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
     
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true });
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e0e7ff',
+                primaryTextColor: '#0f172a',
+                primaryBorderColor: '#2563eb',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#ffffff'
+            }
+        });
     </script>
 </body>
 </html>

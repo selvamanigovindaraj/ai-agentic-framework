@@ -17,9 +17,10 @@ A production-ready, composable AI Agentic Framework designed for building comple
 ## 🏗️ Architecture
 
 The framework is built around the **Agent** core, which orchestrates the interaction between:
-1.  **LLM Client**: The brain (e.g., OpenAI GPT-4).
-2.  **Memory**: The context (Short-term session history + Long-term storage).
-3.  **Tools**: The capabilities (Calculator, API calls, Custom functions).
+
+- **LLM Client**: The brain (e.g., OpenAI GPT-4).
+- **Memory**: The context (Short-term session history + Long-term storage).
+- **Tools**: The capabilities (Calculator, API calls, Custom functions).
 
 ```mermaid
 graph TD
