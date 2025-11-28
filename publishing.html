@@ -1,12 +1,64 @@
-<h1>Publishing Guide</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agentic Framework</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+        }
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        .nav {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaecef;
+        }
+        .nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0366d6;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="api/index.html">API Docs</a>
+        <a href="publishing.html">Publishing Guide</a>
+    </div>
+    <article class="markdown-body">
+        <h1 id="publishing-guide">Publishing Guide</h1>
 
 <p>This guide covers how to publish the <strong>AI Agentic Framework</strong> documentation and package.</p>
 
-<h2>📚 Publishing Documentation</h2>
+<h2 id="publishing-documentation">📚 Publishing Documentation</h2>
 
 <p>We use <strong>GitHub Pages</strong> to host the documentation. A GitHub Action is configured to automatically build and deploy the docs whenever you push to the <code>main</code> branch.</p>
 
-<h3>Automated Deployment</h3>
+<h3 id="automated-deployment">Automated Deployment</h3>
 
 <ol>
 <li>Ensure the <code>.github/workflows/deploy_docs.yml</code> file exists in your repository.</li>
@@ -16,58 +68,75 @@
 <li>Push changes to <code>main</code>. The action will run <code>pdoc</code>, build the site, and deploy it.</li>
 </ol>
 
-<h3>Manual Build</h3>
+<h3 id="manual-build">Manual Build</h3>
 
-<p>To build the documentation locally:
-```bash</p>
+<p>To build the documentation locally:</p>
 
-<h1>Generate API docs</h1>
+<div class="codehilite">
+<pre><span></span><code><span class="c1"># Generate API docs</span>
+uv<span class="w"> </span>run<span class="w"> </span>pdoc<span class="w"> </span>-o<span class="w"> </span>docs/api<span class="w"> </span>src/agentic_framework
 
-<p>uv run pdoc -o docs/api src/agentic_framework</p>
+<span class="c1"># The docs are now available in docs/</span>
+<span class="c1"># You can serve them locally with a simple HTTP server</span>
+python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span>-d<span class="w"> </span>docs
+</code></pre>
+</div>
 
-<h1>The docs are now available in docs/</h1>
-
-<h1>You can serve them locally with a simple HTTP server</h1>
-
-<p>python -m http.server -d docs
-```</p>
-
-<h2>📦 Publishing Package to PyPI</h2>
+<h2 id="publishing-package-to-pypi">📦 Publishing Package to PyPI</h2>
 
 <p>To publish the package to the Python Package Index (PyPI), follow these steps.</p>
 
-<h3>Prerequisites</h3>
+<h3 id="prerequisites">Prerequisites</h3>
 
 <ul>
 <li>A PyPI account.</li>
 <li><code>uv</code> installed.</li>
 </ul>
 
-<h3>Steps</h3>
+<h3 id="steps">Steps</h3>
 
 <ol>
-<li><p><strong>Build the Package</strong>
-<code>bash
-uv build
-</code>
-This will create <code>dist/*.whl</code> and <code>dist/*.tar.gz</code> files.</p></li>
+<li><p><strong>Build the Package</strong></p>
+
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>build
+</code></pre>
+</div>
+
+<p>This will create <code>dist/*.whl</code> and <code>dist/*.tar.gz</code> files.</p></li>
 <li><p><strong>Publish to PyPI</strong>
 You can use <code>uv</code> to publish (if configured) or <code>twine</code>.</p>
 
-<p>Using <code>uv</code>:
-<code>bash
-uv publish
-</code></p>
+<p>Using <code>uv</code>:</p>
 
-<p>Using <code>twine</code> (standard method):
-<code>bash
-pip install twine
-twine upload dist/*
-</code></p></li>
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>publish
+</code></pre>
+</div>
+
+<p>Using <code>twine</code> (standard method):</p>
+
+<div class="codehilite">
+<pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>twine
+twine<span class="w"> </span>upload<span class="w"> </span>dist/*
+</code></pre>
+</div></li>
 <li><p><strong>Enter Credentials</strong>
 When prompted, enter your PyPI username (<code>__token__</code>) and your API token as the password.</p></li>
 </ol>
 
-<h3>Versioning</h3>
+<h3 id="versioning">Versioning</h3>
 
 <p>Remember to update the <code>version</code> in <code>pyproject.toml</code> before publishing a new release.</p>
+
+    </article>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

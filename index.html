@@ -1,10 +1,62 @@
-<h1>🤖 AI Agentic Framework</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agentic Framework</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+        }
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        .nav {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaecef;
+        }
+        .nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0366d6;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="api/index.html">API Docs</a>
+        <a href="publishing.html">Publishing Guide</a>
+    </div>
+    <article class="markdown-body">
+        <h1 id="ai-agentic-framework">🤖 AI Agentic Framework</h1>
 
 <p>A production-ready, composable AI Agentic Framework designed for building complex, multi-agent systems with ease. It features dynamic agent creation, robust orchestration, multi-layer memory, and enterprise-grade observability.</p>
 
 <p><a href="api/index.html">API Documentation</a></p>
 
-<h2>🌟 Key Features</h2>
+<h2 id="key-features">🌟 Key Features</h2>
 
 <ul>
 <li><strong>Composable Architecture</strong>: Modular design for Agents, Tools, Memory, and LLM Clients.</li>
@@ -16,76 +68,76 @@
 <li><strong>Safety &amp; Control</strong>: Cost limits, iteration caps, and sandbox environments.</li>
 </ul>
 
-<h2>🏗️ Architecture</h2>
+<h2 id="architecture">🏗️ Architecture</h2>
 
 <p>The framework is built around the <strong>Agent</strong> core, which orchestrates the interaction between:
 1.  <strong>LLM Client</strong>: The brain (e.g., OpenAI GPT-4).
 2.  <strong>Memory</strong>: The context (Short-term session history + Long-term storage).
 3.  <strong>Tools</strong>: The capabilities (Calculator, API calls, Custom functions).</p>
 
-<p><code>mermaid
-graph TD
+<pre class="mermaid-pre"><div class="mermaid">graph TD
     User[User/App] --&gt; Agent
     Agent --&gt; Memory
     Agent --&gt; LLM[LLM Client]
     Agent --&gt; Tools[Tool Registry]
     Tools --&gt; External[External APIs]
     Agent --&gt; Telemetry[OpenTelemetry]
-</code></p>
+</div></pre>
 
-<h2>📦 Components</h2>
+<h2 id="components">📦 Components</h2>
 
-<h3>1. Agent</h3>
+<h3 id="1-agent">1. Agent</h3>
 
 <p>The <code>Agent</code> class is the main entry point. It implements the ReAct loop, managing the state, history, and tool execution.</p>
 
-<p>```python
-from agentic<em>framework import Agent
-from agentic</em>framework.llm import OpenAIClient</p>
+<div class="codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework.llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIClient</span>
 
-<p>agent = Agent(
-    id="researcher",
-    name="Researcher",
-    instructions="You are a helpful research assistant.",
-    model_client=OpenAIClient(),
-    tools=[]
-)
-```</p>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;researcher&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Researcher&quot;</span><span class="p">,</span>
+    <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You are a helpful research assistant.&quot;</span><span class="p">,</span>
+    <span class="n">model_client</span><span class="o">=</span><span class="n">OpenAIClient</span><span class="p">(),</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[]</span>
+<span class="p">)</span>
+</code></pre>
+</div>
 
-<h3>2. Tools</h3>
+<h3 id="2-tools">2. Tools</h3>
 
 <p>Tools are executable functions that agents can use. Define custom tools by inheriting from <code>Tool</code>.</p>
 
-<p>```python
-from agentic_framework.core.tool import Tool</p>
+<div class="codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework.core.tool</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tool</span>
 
-<p>class MyTool(Tool):
-    def <strong>init</strong>(self):
-        super().<strong>init</strong>(name="my_tool", description="Does something useful")</p>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTool</span><span class="p">(</span><span class="n">Tool</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_tool&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Does something useful&quot;</span><span class="p">)</span>
 
-<pre><code>async def execute(self, param: str) -&gt; str:
-    return f"Executed with {param}"
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Executed with </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre>
+</div>
 
-<p>```</p>
-
-<h3>3. Memory</h3>
+<h3 id="3-memory">3. Memory</h3>
 
 <p>Memory providers allow agents to retain information. <code>SimpleMemory</code> is provided for testing, but you can implement <code>MemoryProvider</code> for vector databases (Chroma, Pinecone, etc.).</p>
 
-<p>```python
-from agentic_framework.memory.simple import SimpleMemory</p>
+<div class="codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework.memory.simple</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleMemory</span>
 
-<p>agent = Agent(..., memory=SimpleMemory())
-```</p>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="n">SimpleMemory</span><span class="p">())</span>
+</code></pre>
+</div>
 
-<h3>4. Observability</h3>
+<h3 id="4-observability">4. Observability</h3>
 
 <p>Enable OpenTelemetry tracing by setting <code>ENABLE_TELEMETRY=true</code>. The framework automatically traces agent execution, tool calls, and LLM requests.</p>
 
-<h2>🚀 Quick Start</h2>
+<h2 id="quick-start">🚀 Quick Start</h2>
 
-<h3>Prerequisites</h3>
+<h3 id="prerequisites">Prerequisites</h3>
 
 <ul>
 <li>Python 3.10+</li>
@@ -93,97 +145,143 @@ from agentic_framework.memory.simple import SimpleMemory</p>
 <li>OpenAI API Key</li>
 </ul>
 
-<h3>Installation</h3>
+<h3 id="installation">Installation</h3>
 
 <ol>
-<li><p><strong>Clone the repository:</strong>
-<code>bash
-git clone https://github.com/selvamanigovindaraj/ai-agentic-framework.git
-cd ai-agentic-framework
-</code></p></li>
-<li><p><strong>Install dependencies:</strong>
-```bash
-uv sync</p>
+<li><p><strong>Clone the repository:</strong></p>
 
-<h1>OR</h1>
+<div class="codehilite">
+<pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/selvamanigovindaraj/ai-agentic-framework.git
+<span class="nb">cd</span><span class="w"> </span>ai-agentic-framework
+</code></pre>
+</div></li>
+<li><p><strong>Install dependencies:</strong></p>
 
-<p>pip install -e .
-```</p></li>
-<li><p><strong>Configure Environment:</strong>
-```bash
-cp .env.example .env</p>
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>sync
+<span class="c1"># OR</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre>
+</div></li>
+<li><p><strong>Configure Environment:</strong></p>
 
-<h1>Edit .env and add your OPENAI<em>API</em>KEY</h1>
-
-<p>```</p></li>
+<div class="codehilite">
+<pre><span></span><code>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<span class="c1"># Edit .env and add your OPENAI_API_KEY</span>
+</code></pre>
+</div></li>
 </ol>
 
-<h3>Usage Examples</h3>
+<h3 id="usage-examples">Usage Examples</h3>
 
-<h4>Basic Agent</h4>
+<h4 id="basic-agent">Basic Agent</h4>
 
-<p>Run the CLI to test a basic agent:
-<code>bash
-uv run agentic test
-</code></p>
+<p>Run the CLI to test a basic agent:</p>
 
-<p>Or use Python:
-```python
-import asyncio
-from agentic<em>framework import Agent, ToolRegistry
-from agentic</em>framework.llm import OpenAIClient
-from agentic_framework.tools.calculator import Calculator</p>
-
-<p>async def main():
-    llm = OpenAIClient()
-    registry = ToolRegistry()
-    registry.register(Calculator())</p>
-
-<pre><code>agent = Agent(
-    id="math_agent",
-    name="Math Agent",
-    instructions="You are a math wizard.",
-    tools=registry.get_all(),
-    model_client=llm
-)
-
-result = await agent.execute("What is 50 * 25?")
-print(result["output"])
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>agentic<span class="w"> </span><span class="nb">test</span>
 </code></pre>
+</div>
 
-<p>if <strong>name</strong> == "<strong>main</strong>":
-    asyncio.run(main())
-```</p>
+<p>Or use Python:</p>
 
-<h4>Multi-Agent Workflow</h4>
+<div class="codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">ToolRegistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework.llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentic_framework.tools.calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calculator</span>
 
-<p>Run the multi-agent example:
-<code>bash
-uv run agentic multiagent
-</code></p>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">llm</span> <span class="o">=</span> <span class="n">OpenAIClient</span><span class="p">()</span>
+    <span class="n">registry</span> <span class="o">=</span> <span class="n">ToolRegistry</span><span class="p">()</span>
+    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Calculator</span><span class="p">())</span>
 
-<h2>🛠️ Configuration</h2>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;math_agent&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Math Agent&quot;</span><span class="p">,</span>
+        <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;You are a math wizard.&quot;</span><span class="p">,</span>
+        <span class="n">tools</span><span class="o">=</span><span class="n">registry</span><span class="o">.</span><span class="n">get_all</span><span class="p">(),</span>
+        <span class="n">model_client</span><span class="o">=</span><span class="n">llm</span>
+    <span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;What is 50 * 25?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre>
+</div>
+
+<h4 id="multi-agent-workflow">Multi-Agent Workflow</h4>
+
+<p>Run the multi-agent example:</p>
+
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>agentic<span class="w"> </span>multiagent
+</code></pre>
+</div>
+
+<h2 id="configuration">🛠️ Configuration</h2>
 
 <p>The <code>Agent</code> can be configured via <code>AgentConfig</code>:</p>
 
-<p>| Parameter | Default | Description |
-| :--- | :--- | :--- |
-| <code>max_iterations</code> | 10 | Max ReAct loops per task |
-| <code>timeout_seconds</code> | 300 | Execution timeout |
-| <code>max_cost</code> | 1.0 | Max estimated cost ($) |
-| <code>temperature</code> | 0.7 | LLM creativity |</p>
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">Parameter</th>
+  <th style="text-align:left;">Default</th>
+  <th style="text-align:left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left;"><code>max_iterations</code></td>
+  <td style="text-align:left;">10</td>
+  <td style="text-align:left;">Max ReAct loops per task</td>
+</tr>
+<tr>
+  <td style="text-align:left;"><code>timeout_seconds</code></td>
+  <td style="text-align:left;">300</td>
+  <td style="text-align:left;">Execution timeout</td>
+</tr>
+<tr>
+  <td style="text-align:left;"><code>max_cost</code></td>
+  <td style="text-align:left;">1.0</td>
+  <td style="text-align:left;">Max estimated cost ($)</td>
+</tr>
+<tr>
+  <td style="text-align:left;"><code>temperature</code></td>
+  <td style="text-align:left;">0.7</td>
+  <td style="text-align:left;">LLM creativity</td>
+</tr>
+</tbody>
+</table>
 
-<h2>🧪 Testing</h2>
+<h2 id="testing">🧪 Testing</h2>
 
-<p>Run the end-to-end test suite:
-<code>bash
-uv run pytest tests/test_e2e.py
-</code></p>
+<p>Run the end-to-end test suite:</p>
 
-<h2>🤝 Contributing</h2>
+<div class="codehilite">
+<pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_e2e.py
+</code></pre>
+</div>
+
+<h2 id="contributing">🤝 Contributing</h2>
 
 <p>Contributions are welcome! Please submit a Pull Request.</p>
 
-<h2>📄 License</h2>
+<h2 id="license">📄 License</h2>
 
 <p>MIT License</p>
+
+    </article>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
