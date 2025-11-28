@@ -69,3 +69,5 @@ htmlcov/
 *.tmp
 temp/
 tmp/
+
+chroma_db/
