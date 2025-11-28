@@ -6,6 +6,8 @@ python-dotenv
 # Vector Database
 chromadb
 docker
+fastapi
+uvicorn
 pinecone-client
 
 # Memory & Storage

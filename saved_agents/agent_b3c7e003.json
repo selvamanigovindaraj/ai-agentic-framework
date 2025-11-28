@@ -1,0 +1,9 @@
+{
+  "name": "Test Bot",
+  "instructions": "You are a test bot.",
+  "model": "gpt-4o-mini",
+  "tools": [],
+  "memory": false,
+  "safety": true,
+  "id": "agent_b3c7e003"
+}

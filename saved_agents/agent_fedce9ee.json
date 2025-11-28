@@ -1,0 +1,12 @@
+{
+  "name": "Test Agent",
+  "instructions": "you are agent who will search the web and answer  it and calculate using the code executer for calculation",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "search",
+    "code"
+  ],
+  "memory": true,
+  "safety": true,
+  "id": "agent_fedce9ee"
+}

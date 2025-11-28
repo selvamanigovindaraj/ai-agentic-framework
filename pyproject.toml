@@ -27,6 +27,8 @@ dependencies = [
     "python-dotenv",
     "chromadb",
     "docker",
+    "fastapi",
+    "uvicorn",
     "pinecone-client",
     "redis",
     "aioredis",
