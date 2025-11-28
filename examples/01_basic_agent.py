@@ -1,9 +1,13 @@
 """Basic working example of the agent framework"""
 import asyncio
 import os
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add to path for development
-from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 try:
@@ -19,7 +23,7 @@ except ImportError as e:
 async def main():
     """Basic agent example"""
     print("🤖 AI Agentic Framework - Basic Example")
-    print(""="*80)
+    print("="*80)
 
     # Check API key
     api_key = os.getenv("OPENAI_API_KEY")

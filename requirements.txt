@@ -43,3 +43,5 @@ pre-commit
 # Financial Analysis
 yfinance
 ddgs
+langgraph
+langchain-core

@@ -1,89 +1,104 @@
-"""Multi-Agent Orchestrator"""
-from typing import Dict, Any, List, Optional
-import asyncio
+"""Multi-Agent Orchestrator using LangGraph"""
+from typing import Dict, Any, List, Optional, TypedDict, Annotated
+import operator
 from dataclasses import dataclass
+from langgraph.graph import StateGraph, END
 
 try:
     from ..core.agent import Agent
     from ..core.state import State
-    from ..tools.registry import ToolRegistry
 except ImportError:
     pass
 
 
-@dataclass
-class Node:
-    """Workflow node (agent or function)"""
-    id: str
-    agent: Agent
-    inputs: List[str] = None
-    outputs: List[str] = None
+class AgentState(TypedDict):
+    """The state of the agent workflow"""
+    input: str
+    output: Optional[str]
+    # We can add more fields here like 'intermediate_steps', 'errors', etc.
+    # Using operator.add for list fields allows appending updates
+    messages: Annotated[List[Dict[str, Any]], operator.add]
 
 
 class WorkflowGraph:
-    """Directed acyclic graph for multi-agent workflows"""
+    """Orchestrator using LangGraph StateGraph"""
     
     def __init__(self):
-        self.nodes: Dict[str, Node] = {}
-        self.edges: Dict[str, List[str]] = {}
+        self.workflow = StateGraph(AgentState)
+        self.entry_point = None
+        self.nodes = set()
     
     def add_node(self, node_id: str, agent: Agent) -> None:
         """Add agent node to workflow"""
-        self.nodes[node_id] = Node(id=node_id, agent=agent)
-        self.edges[node_id] = []
+        
+        async def agent_node(state: AgentState) -> Dict:
+            print(f"🔄 Executing node: {node_id} ({agent.name})")
+            
+            # Get the latest message or input as task
+            task = state["input"]
+            if state.get("messages"):
+                last_msg = state["messages"][-1]
+                if last_msg["role"] == "assistant":
+                    task = f"Based on previous output: {last_msg['content'][:200]}..., continue the task."
+                elif last_msg["role"] == "user":
+                    task = last_msg["content"]
+            
+            # Execute agent
+            result = await agent.execute(task=task)
+            
+            if result["success"]:
+                return {
+                    "output": result["output"],
+                    "messages": [{"role": "assistant", "content": result["output"], "name": node_id}]
+                }
+            else:
+                return {
+                    "output": f"Error: {result['error']}",
+                    "messages": [{"role": "system", "content": f"Error in {node_id}: {result['error']}"}]
+                }
+
+        self.workflow.add_node(node_id, agent_node)
+        self.nodes.add(node_id)
+        
+        # If first node, set as entry point (simple logic for now)
+        if not self.entry_point:
+            self.entry_point = node_id
+            self.workflow.set_entry_point(node_id)
     
     def add_edge(self, from_node: str, to_node: str) -> None:
         """Add directed edge between nodes"""
-        if from_node in self.nodes and to_node in self.nodes:
-            self.edges[from_node].append(to_node)
+        self.workflow.add_edge(from_node, to_node)
     
-    async def execute(self, input_data: Dict[str, Any], start_node: str = None) -> Dict[str, Any]:
-        """Execute workflow from start node"""
-        state = State({"input": input_data})
+    def set_entry_point(self, node_id: str) -> None:
+        """Explicitly set entry point"""
+        self.workflow.set_entry_point(node_id)
+        self.entry_point = node_id
+
+    def add_conditional_edges(self, source: str, path: Any) -> None:
+        """Add conditional edges (advanced)"""
+        self.workflow.add_conditional_edges(source, path)
+
+    async def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute workflow"""
+        app = self.workflow.compile()
         
-        # Find start node (no incoming edges)
-        if not start_node:
-            start_node = next(iter(self.nodes))
+        # Initialize state
+        initial_state = {
+            "input": input_data.get("task", ""),
+            "messages": [],
+            "output": None
+        }
         
-        current_nodes = [start_node]
-        visited = set()
-        
-        while current_nodes:
-            next_nodes = []
-            
-            for node_id in current_nodes:
-                if node_id in visited:
-                    continue
-                
-                visited.add(node_id)
-                node = self.nodes[node_id]
-                
-                print(f"🔄 Executing node: {node_id} ({node.agent.name})")
-                
-                # Execute agent
-                result = await node.agent.execute(
-                    task=state.data.get("current_task", "Process input"),
-                    context=state.data
-                )
-                
-                if result["success"]:
-                    state.update({node_id: result["output"]})
-                    
-                    # Add next nodes
-                    for next_node in self.edges[node_id]:
-                        next_nodes.append(next_node)
-                        state.data["current_task"] = f"Use {node_id} output: {result['output'][:100]}..."
-                else:
-                    print(f"❌ Node {node_id} failed: {result['error']}")
-                    return {"success": False, "error": result["error"]}
-            
-            current_nodes = next_nodes
-        
-        return {"success": True, "output": state.data}
+        try:
+            # Run the graph
+            final_state = await app.ainvoke(initial_state)
+            return {"success": True, "output": final_state}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
 
 class Orchestrator:
-    """Multi-agent orchestrator with workflow support"""
+    """Multi-agent orchestrator wrapper"""
     
     def __init__(self, workflow: WorkflowGraph):
         self.workflow = workflow

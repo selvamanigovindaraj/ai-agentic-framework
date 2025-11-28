@@ -2,6 +2,9 @@ import asyncio
 import os
 from agentic_framework import Agent, ToolRegistry
 from agentic_framework.llm import OpenAIClient
+from dotenv import load_dotenv
+
+load_dotenv()
 from agentic_framework.tools.calculator import Calculator
 from agentic_framework.memory.simple import SimpleMemory
 

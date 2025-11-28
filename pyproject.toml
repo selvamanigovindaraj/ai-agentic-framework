@@ -42,6 +42,8 @@ dependencies = [
     "rich",
     "yfinance",
     "ddgs",
+    "langgraph",
+    "langchain-core",
 ]
 
 [project.scripts]
