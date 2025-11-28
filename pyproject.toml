@@ -40,6 +40,8 @@ dependencies = [
     "jinja2",
     "click",
     "rich",
+    "yfinance",
+    "ddgs",
 ]
 
 [project.scripts]

@@ -146,18 +146,50 @@ class Agent:
         return any(marker in response.lower() for marker in markers)
     
     def _extract_tool_calls(self, response: str) -> List[Dict]:
-        """Extract tool calls (simplified regex)"""
+        """Extract tool calls using AST parsing"""
         import re
+        import ast
+        import inspect
+        
         tool_calls = []
         for tool in self.tools:
-            # Match tool_name('param') or tool_name("param")
-            pattern = rf"{tool.name}\s*\((['\"]?)(.*?)\1\)"
-            if match := re.search(pattern, response, re.IGNORECASE):
-                param = match.group(2)
-                tool_calls.append({"tool": tool, "params": {"param": param} if param else {}})
-            elif tool.name.lower() in response.lower():
-                 # Fallback for no params
-                 tool_calls.append({"tool": tool, "params": {}})
+            # Match tool_name(...) handling multiline args
+            # We use a simplified regex to find the start, then let AST handle parsing
+            # This regex finds "tool_name(" and captures until ")"
+            # Note: This is still a bit fragile for nested parens, but better than before
+            pattern = rf"{tool.name}\s*\((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*\)"
+            
+            for match in re.finditer(pattern, response, re.IGNORECASE):
+                call_str = match.group(0)
+                try:
+                    # Parse the call string
+                    tree = ast.parse(call_str, mode='eval')
+                    if not isinstance(tree.body, ast.Call):
+                        continue
+                        
+                    # Extract arguments
+                    params = {}
+                    
+                    # Handle keyword args (key=value)
+                    for kw in tree.body.keywords:
+                        params[kw.arg] = ast.literal_eval(kw.value)
+                    
+                    # Handle positional args
+                    if tree.body.args:
+                        # Inspect tool signature to map positional args to names
+                        sig = inspect.signature(tool.execute)
+                        param_names = list(sig.parameters.keys())
+                        
+                        for i, arg in enumerate(tree.body.args):
+                            if i < len(param_names):
+                                params[param_names[i]] = ast.literal_eval(arg)
+                    
+                    tool_calls.append({"tool": tool, "params": params})
+                    
+                except Exception:
+                    # Fallback or ignore invalid calls
+                    continue
+                    
         return tool_calls
     
     async def _execute_tool(self, tool_call: Dict) -> str:

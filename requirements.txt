@@ -39,3 +39,7 @@ black
 ruff
 mypy
 pre-commit
+
+# Financial Analysis
+yfinance
+ddgs
