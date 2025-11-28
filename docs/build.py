@@ -78,7 +78,8 @@ def convert_file(input_path, output_path):
     )
     
     # Render template
-    final_html = TEMPLATE.format(content=html_content)
+    # Render template
+    final_html = TEMPLATE.replace("{content}", html_content)
     
     with open(output_path, "w") as f:
         f.write(final_html)
