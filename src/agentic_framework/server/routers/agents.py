@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from typing import List, Dict
+from fastapi import APIRouter, HTTPException
+from typing import List, Dict, Any
 import uuid
 import json
 import os
 
 # Models
-from agentic_framework.server.models import AgentCreateRequest, AgentResponse, ExecuteRequest, ExecuteResponse
+from agentic_framework.server.models import AgentCreate, AgentResponse, ExecuteRequest, ExecuteResponse
 
 # Framework Imports
 from agentic_framework import Agent
@@ -22,6 +23,8 @@ os.makedirs(AGENTS_DIR, exist_ok=True)
 
 # In-memory cache of loaded agents
 loaded_agents: Dict[str, Agent] = {}
+# In-memory storage for active workflows
+active_workflows: Dict[str, Any] = {}
 
 @router.get("", response_model=List[AgentResponse])
 async def list_agents():
@@ -39,10 +42,10 @@ async def list_agents():
     return agents
 
 @router.post("", response_model=AgentResponse)
-async def create_agent(request: AgentCreateRequest):
+async def create_agent(agent: AgentCreate):
     """Create and save an agent"""
     agent_id = f"agent_{uuid.uuid4().hex[:8]}"
-    agent_data = request.dict()
+    agent_data = agent.dict()
     agent_data["id"] = agent_id
     
     # Save to disk
@@ -54,6 +57,22 @@ async def create_agent(request: AgentCreateRequest):
 @router.post("/{agent_id}/execute", response_model=ExecuteResponse)
 async def execute_agent(agent_id: str, request: ExecuteRequest):
     """Execute an agent task"""
+    # Check if this is a resume request for an existing workflow
+    if agent_id in active_workflows:
+        workflow_app = active_workflows[agent_id]["app"]
+        current_config = active_workflows[agent_id]["config"]
+        
+        # Resume the workflow
+        # In a real app, we would parse request.task to inject specific feedback/input
+        result = await workflow_app.ainvoke(request.task, config=current_config)
+        active_workflows[agent_id]["state"] = result
+        
+        return ExecuteResponse(
+            success=True,
+            output=str(result),
+            cost=0.0
+        )
+
     # Load agent config
     config_path = os.path.join(AGENTS_DIR, f"{agent_id}.json")
     if not os.path.exists(config_path):
@@ -62,7 +81,29 @@ async def execute_agent(agent_id: str, request: ExecuteRequest):
     with open(config_path, "r") as f:
         config = json.load(f)
     
-    # Reconstruct Agent (Simple caching for demo)
+    # Check for Dynamic Workflow
+    if config.get("model") == "dynamic-workflow":
+        from agentic_framework.workflows.dynamic_workflow import DynamicWorkflow
+        
+        workflow_def = config.get("workflow", {})
+        workflow = DynamicWorkflow(workflow_def)
+        app = workflow.build_graph()
+        
+        initial_state = {
+            "input": request.task, 
+            "messages": [], 
+            "context": {}, 
+            "current_node": "start", 
+            "status": "started"
+        }
+        thread_id = str(uuid.uuid4())
+        config_run = {"configurable": {"thread_id": thread_id}}
+        
+        result = await app.ainvoke(initial_state, config=config_run)
+        active_workflows[agent_id] = {"app": app, "config": config_run, "state": result}
+        return ExecuteResponse(success=True, output=str(result), cost=0.0)
+
+    # Default Agent Execution
     if agent_id not in loaded_agents:
         llm = OpenAIClient(model=config["model"])
         tools = []
@@ -70,7 +111,6 @@ async def execute_agent(agent_id: str, request: ExecuteRequest):
             tools.append(SearchTool())
         if "finance" in config["tools"]:
             tools.append(FundamentalAnalysisTool())
-        # Code tool requires special handling for sandbox, simplified here
             
         memory = MultiLayerMemory() if config["memory"] else None
         
@@ -86,7 +126,6 @@ async def execute_agent(agent_id: str, request: ExecuteRequest):
     
     agent = loaded_agents[agent_id]
     
-    # Execute
     try:
         result = await agent.execute(request.task)
         return ExecuteResponse(

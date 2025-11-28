@@ -518,3 +518,43 @@ body {
     color: var(--text-tertiary);
     box-shadow: none;
 }
+
+/* Workflow Builder */
+.workflow-sidebar {
+    width: 200px;
+    border-right: 1px solid var(--border-subtle);
+    padding: 16px;
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dndnode {
+    padding: 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    cursor: grab;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dndnode.llm {
+    border-color: #0070F3;
+}
+
+.dndnode.tool {
+    border-color: #F5A623;
+}
+
+.dndnode.hitl {
+    border-color: #FF4D4F;
+}
+
+.reactflow-wrapper {
+    flex: 1;
+    height: 100%;
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Visual Finance Bot",
+  "instructions": "Dynamic Workflow Agent",
+  "model": "dynamic-workflow",
+  "tools": [],
+  "memory": false,
+  "safety": true,
+  "workflow": {
+    "nodes": [
+      {
+        "id": "1",
+        "type": "llm",
+        "config": {
+          "label": "Analyze Sector",
+          "prompt": "Analyze the sector for {input}"
+        }
+      },
+      {
+        "id": "2",
+        "type": "llm",
+        "config": {
+          "label": "Analyze Financials",
+          "prompt": "Analyze financials for {input}"
+        }
+      },
+      {
+        "id": "3",
+        "type": "hitl",
+        "config": {
+          "label": "Confirm DVL",
+          "message": "Confirm DVL calculations"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "1",
+        "target": "2"
+      },
+      {
+        "source": "2",
+        "target": "3"
+      }
+    ]
+  },
+  "id": "agent_66aadbd9"
+}

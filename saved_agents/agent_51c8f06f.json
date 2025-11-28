@@ -1,0 +1,9 @@
+{
+  "name": "Visual Finance Bot",
+  "instructions": "Dynamic Workflow Agent",
+  "model": "dynamic-workflow",
+  "tools": [],
+  "memory": false,
+  "safety": true,
+  "id": "agent_51c8f06f"
+}

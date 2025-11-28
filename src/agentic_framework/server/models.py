@@ -10,6 +10,15 @@ class AgentConfig(BaseModel):
     memory: bool = False
     safety: bool = True
 
+class AgentCreate(BaseModel):
+    name: str
+    instructions: str
+    model: str
+    tools: List[str] = []
+    memory: bool = False
+    safety: bool = True
+    workflow: Optional[Dict[str, Any]] = None # For Dynamic Workflows
+
 class AgentCreateRequest(AgentConfig):
     pass
 

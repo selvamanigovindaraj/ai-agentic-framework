@@ -20,6 +20,11 @@ function Sidebar() {
                     <Plus size={18} />
                     <span>Create Agent</span>
                 </NavLink>
+
+                <NavLink to="/workflow-builder" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <LayoutGrid size={18} />
+                    <span>Visual Builder</span>
+                </NavLink>
             </nav>
 
             <div className="sidebar-footer">
