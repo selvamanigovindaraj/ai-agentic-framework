@@ -1,0 +1,189 @@
+<h1>🤖 AI Agentic Framework</h1>
+
+<p>A production-ready, composable AI Agentic Framework designed for building complex, multi-agent systems with ease. It features dynamic agent creation, robust orchestration, multi-layer memory, and enterprise-grade observability.</p>
+
+<p><a href="api/index.html">API Documentation</a></p>
+
+<h2>🌟 Key Features</h2>
+
+<ul>
+<li><strong>Composable Architecture</strong>: Modular design for Agents, Tools, Memory, and LLM Clients.</li>
+<li><strong>ReAct Reasoning Engine</strong>: Robust thought-action-observation loop for complex problem solving.</li>
+<li><strong>Multi-Agent Orchestration</strong>: Support for collaborative workflows and agent handoffs.</li>
+<li><strong>Memory Systems</strong>: Pluggable memory providers (Simple, Vector-based) for context retention.</li>
+<li><strong>Tool Registry</strong>: Centralized management of tools with automatic parameter extraction.</li>
+<li><strong>Observability</strong>: Built-in OpenTelemetry integration for tracing agent execution.</li>
+<li><strong>Safety &amp; Control</strong>: Cost limits, iteration caps, and sandbox environments.</li>
+</ul>
+
+<h2>🏗️ Architecture</h2>
+
+<p>The framework is built around the <strong>Agent</strong> core, which orchestrates the interaction between:
+1.  <strong>LLM Client</strong>: The brain (e.g., OpenAI GPT-4).
+2.  <strong>Memory</strong>: The context (Short-term session history + Long-term storage).
+3.  <strong>Tools</strong>: The capabilities (Calculator, API calls, Custom functions).</p>
+
+<p><code>mermaid
+graph TD
+    User[User/App] --&gt; Agent
+    Agent --&gt; Memory
+    Agent --&gt; LLM[LLM Client]
+    Agent --&gt; Tools[Tool Registry]
+    Tools --&gt; External[External APIs]
+    Agent --&gt; Telemetry[OpenTelemetry]
+</code></p>
+
+<h2>📦 Components</h2>
+
+<h3>1. Agent</h3>
+
+<p>The <code>Agent</code> class is the main entry point. It implements the ReAct loop, managing the state, history, and tool execution.</p>
+
+<p>```python
+from agentic<em>framework import Agent
+from agentic</em>framework.llm import OpenAIClient</p>
+
+<p>agent = Agent(
+    id="researcher",
+    name="Researcher",
+    instructions="You are a helpful research assistant.",
+    model_client=OpenAIClient(),
+    tools=[]
+)
+```</p>
+
+<h3>2. Tools</h3>
+
+<p>Tools are executable functions that agents can use. Define custom tools by inheriting from <code>Tool</code>.</p>
+
+<p>```python
+from agentic_framework.core.tool import Tool</p>
+
+<p>class MyTool(Tool):
+    def <strong>init</strong>(self):
+        super().<strong>init</strong>(name="my_tool", description="Does something useful")</p>
+
+<pre><code>async def execute(self, param: str) -&gt; str:
+    return f"Executed with {param}"
+</code></pre>
+
+<p>```</p>
+
+<h3>3. Memory</h3>
+
+<p>Memory providers allow agents to retain information. <code>SimpleMemory</code> is provided for testing, but you can implement <code>MemoryProvider</code> for vector databases (Chroma, Pinecone, etc.).</p>
+
+<p>```python
+from agentic_framework.memory.simple import SimpleMemory</p>
+
+<p>agent = Agent(..., memory=SimpleMemory())
+```</p>
+
+<h3>4. Observability</h3>
+
+<p>Enable OpenTelemetry tracing by setting <code>ENABLE_TELEMETRY=true</code>. The framework automatically traces agent execution, tool calls, and LLM requests.</p>
+
+<h2>🚀 Quick Start</h2>
+
+<h3>Prerequisites</h3>
+
+<ul>
+<li>Python 3.10+</li>
+<li><code>uv</code> (recommended) or <code>pip</code></li>
+<li>OpenAI API Key</li>
+</ul>
+
+<h3>Installation</h3>
+
+<ol>
+<li><p><strong>Clone the repository:</strong>
+<code>bash
+git clone https://github.com/selvamanigovindaraj/ai-agentic-framework.git
+cd ai-agentic-framework
+</code></p></li>
+<li><p><strong>Install dependencies:</strong>
+```bash
+uv sync</p>
+
+<h1>OR</h1>
+
+<p>pip install -e .
+```</p></li>
+<li><p><strong>Configure Environment:</strong>
+```bash
+cp .env.example .env</p>
+
+<h1>Edit .env and add your OPENAI<em>API</em>KEY</h1>
+
+<p>```</p></li>
+</ol>
+
+<h3>Usage Examples</h3>
+
+<h4>Basic Agent</h4>
+
+<p>Run the CLI to test a basic agent:
+<code>bash
+uv run agentic test
+</code></p>
+
+<p>Or use Python:
+```python
+import asyncio
+from agentic<em>framework import Agent, ToolRegistry
+from agentic</em>framework.llm import OpenAIClient
+from agentic_framework.tools.calculator import Calculator</p>
+
+<p>async def main():
+    llm = OpenAIClient()
+    registry = ToolRegistry()
+    registry.register(Calculator())</p>
+
+<pre><code>agent = Agent(
+    id="math_agent",
+    name="Math Agent",
+    instructions="You are a math wizard.",
+    tools=registry.get_all(),
+    model_client=llm
+)
+
+result = await agent.execute("What is 50 * 25?")
+print(result["output"])
+</code></pre>
+
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    asyncio.run(main())
+```</p>
+
+<h4>Multi-Agent Workflow</h4>
+
+<p>Run the multi-agent example:
+<code>bash
+uv run agentic multiagent
+</code></p>
+
+<h2>🛠️ Configuration</h2>
+
+<p>The <code>Agent</code> can be configured via <code>AgentConfig</code>:</p>
+
+<p>| Parameter | Default | Description |
+| :--- | :--- | :--- |
+| <code>max_iterations</code> | 10 | Max ReAct loops per task |
+| <code>timeout_seconds</code> | 300 | Execution timeout |
+| <code>max_cost</code> | 1.0 | Max estimated cost ($) |
+| <code>temperature</code> | 0.7 | LLM creativity |</p>
+
+<h2>🧪 Testing</h2>
+
+<p>Run the end-to-end test suite:
+<code>bash
+uv run pytest tests/test_e2e.py
+</code></p>
+
+<h2>🤝 Contributing</h2>
+
+<p>Contributions are welcome! Please submit a Pull Request.</p>
+
+<h2>📄 License</h2>
+
+<p>MIT License</p>
