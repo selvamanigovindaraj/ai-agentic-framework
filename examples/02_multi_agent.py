@@ -1,18 +1,9 @@
-from pathlib import Path
-import sys
-
-# For development
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-try:
-    from agentic_framework import Agent, ToolRegistry
-    from agentic_framework.llm import OpenAIClient
-    from agentic_framework.tools.calculator import Calculator
-    from agentic_framework.memory.simple import SimpleMemory
-except ImportError:
-    print("Run: pip install -e .")
-    sys.exit(1)
+import asyncio
+import os
+from agentic_framework import Agent, ToolRegistry
+from agentic_framework.llm import OpenAIClient
+from agentic_framework.tools.calculator import Calculator
+from agentic_framework.memory.simple import SimpleMemory
 
 
 print("🤖 Multi-Agent Demo")

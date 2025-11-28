@@ -7,9 +7,9 @@ from pathlib import Path
 
 try:
     from agentic_framework import Agent, ToolRegistry
-from agentic_framework.llm import OpenAIClient
-from agentic_framework.tools.calculator import Calculator
-from agentic_framework.orchestration.workflow import Orchestrator, WorkflowGraph
+    from agentic_framework.llm import OpenAIClient
+    from agentic_framework.tools.calculator import Calculator
+    from agentic_framework.orchestration.workflow import Orchestrator, WorkflowGraph
     
 except ImportError:
     print("Run: pip install -e .")
@@ -54,8 +54,30 @@ async def run_basic_test():
 async def run_multiagent_test():
     # Multi-agent workflow demo
     click.echo("🚀 Multi-agent workflow...")
-    # Implementation here
-    click.echo("✅ Multi-agent test completed")
+    
+    # Run the example script
+    import subprocess
+    import sys
+    
+    example_path = Path(__file__).parent.parent.parent / "examples" / "02_multi_agent.py"
+    if not example_path.exists():
+        click.echo(f"❌ Example not found at {example_path}")
+        return
+
+    try:
+        process = subprocess.run(
+            [sys.executable, str(example_path)],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=os.environ
+        )
+        click.echo(process.stdout)
+        click.echo("✅ Multi-agent test completed")
+    except subprocess.CalledProcessError as e:
+        click.echo(f"❌ Error running example: {e}")
+        click.echo(e.stdout)
+        click.echo(e.stderr)
 
 if __name__ == '__main__':
     cli()

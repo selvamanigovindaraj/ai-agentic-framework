@@ -1,3 +1,5 @@
+from agentic_framework.core.tool import Tool
+
 class Calculator(Tool):
     """Basic calculator tool"""
     

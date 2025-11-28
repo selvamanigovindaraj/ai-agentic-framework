@@ -1,42 +1,41 @@
 # Core Dependencies
-openai>=1.40.0
-anthropy>=0.8.0
-pydantic>=2.5.0
-python-dotenv>=1.0.0
+openai
+pydantic
+python-dotenv
 
 # Vector Database
-chromadb>=0.4.22
-pinecone-client>=3.0.0
+chromadb
+pinecone-client
 
 # Memory & Storage
-redis>=5.0.0
-aioredis>=2.0.1
+redis
+aioredis
 
 # Observability
-opentelemetry-api>=1.22.0
-opentelemetry-sdk>=1.22.0
-opentelemetry-instrumentation>=0.43b0
-prometheus-client>=0.19.0
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation
+prometheus-client
 
 # Workflow & State Management
-aiohttp>=3.9.0
-asyncio>=3.4.3
+aiohttp
+asyncio
 
 # Utilities
-jsonschema>=4.20.0
-pyyaml>=6.0.1
-jinja2>=3.1.2
-click>=8.1.7
-rich>=13.7.0
+jsonschema
+pyyaml
+jinja2
+click
+rich
 
 # Testing
-pytest>=7.4.3
-pytest-asyncio>=0.21.1
-pytest-cov>=4.1.0
-pytest-mock>=3.12.0
+pytest
+pytest-asyncio
+pytest-cov
+pytest-mock
 
 # Development
-black>=23.12.0
-ruff>=0.1.9
-mypy>=1.7.1
-pre-commit>=3.6.0
+black
+ruff
+mypy
+pre-commit

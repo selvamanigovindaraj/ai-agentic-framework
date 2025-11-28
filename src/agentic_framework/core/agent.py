@@ -66,7 +66,7 @@ class Agent:
             if self.memory:
                 await self.memory.store({
                     "task": task,
-                    "result": result,
+                    "content": result,
                     "timestamp": datetime.now().isoformat()
                 })
             
@@ -146,11 +146,18 @@ class Agent:
         return any(marker in response.lower() for marker in markers)
     
     def _extract_tool_calls(self, response: str) -> List[Dict]:
-        """Extract tool calls (simplified)"""
+        """Extract tool calls (simplified regex)"""
+        import re
         tool_calls = []
         for tool in self.tools:
-            if tool.name.lower() in response.lower():
-                tool_calls.append({"tool": tool, "params": {}})
+            # Match tool_name('param') or tool_name("param")
+            pattern = rf"{tool.name}\s*\((['\"]?)(.*?)\1\)"
+            if match := re.search(pattern, response, re.IGNORECASE):
+                param = match.group(2)
+                tool_calls.append({"tool": tool, "params": {"param": param} if param else {}})
+            elif tool.name.lower() in response.lower():
+                 # Fallback for no params
+                 tool_calls.append({"tool": tool, "params": {}})
         return tool_calls
     
     async def _execute_tool(self, tool_call: Dict) -> str:

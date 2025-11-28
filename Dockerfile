@@ -20,6 +20,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY examples/ ./examples/
 COPY configs/ ./configs/
+COPY setup.py .
+COPY README.md .
+
+# Install the package in editable mode
+RUN pip install -e .
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash agentic

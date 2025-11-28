@@ -3,10 +3,7 @@ from typing import Any, Dict, List
 import os
 from openai import AsyncOpenAI
 
-try:
-    from ..base import BaseLLMClient
-except ImportError:
-    pass
+from .base import BaseLLMClient
 
 
 class OpenAIClient(BaseLLMClient):
@@ -30,12 +27,17 @@ class OpenAIClient(BaseLLMClient):
         )
         
         content = response.choices[0].message.content
+        
         # Approximate cost calculation
-        tokens = len(content.split()) * 1.3  # Rough estimate
+        if content:
+            tokens = len(content.split()) * 1.3  # Rough estimate
+        else:
+            tokens = 0
+            
         cost = tokens * 0.00001  # Approximate $0.01 per 1000 tokens
         
         return {
-            "content": content,
+            "content": content or "",  # Ensure content is at least empty string
             "tokens": tokens,
             "cost": cost
         }
