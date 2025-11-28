@@ -5,6 +5,7 @@ python-dotenv
 
 # Vector Database
 chromadb
+docker
 pinecone-client
 
 # Memory & Storage

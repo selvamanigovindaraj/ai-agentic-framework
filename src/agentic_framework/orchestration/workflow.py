@@ -20,6 +20,8 @@ class AgentState(TypedDict):
     messages: Annotated[List[Dict[str, Any]], operator.add]
 
 
+from langgraph.checkpoint.memory import MemorySaver
+
 class WorkflowGraph:
     """Orchestrator using LangGraph StateGraph"""
     
@@ -27,8 +29,10 @@ class WorkflowGraph:
         self.workflow = StateGraph(AgentState)
         self.entry_point = None
         self.nodes = set()
+        self.checkpointer = MemorySaver()
+        self.interrupt_before = []
     
-    def add_node(self, node_id: str, agent: Agent) -> None:
+    def add_node(self, node_id: str, agent: Agent, interrupt_before: bool = False) -> None:
         """Add agent node to workflow"""
         
         async def agent_node(state: AgentState) -> Dict:
@@ -60,6 +64,9 @@ class WorkflowGraph:
         self.workflow.add_node(node_id, agent_node)
         self.nodes.add(node_id)
         
+        if interrupt_before:
+            self.interrupt_before.append(node_id)
+        
         # If first node, set as entry point (simple logic for now)
         if not self.entry_point:
             self.entry_point = node_id
@@ -78,9 +85,12 @@ class WorkflowGraph:
         """Add conditional edges (advanced)"""
         self.workflow.add_conditional_edges(source, path)
 
-    async def execute(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute workflow"""
-        app = self.workflow.compile()
+    async def execute(self, input_data: Dict[str, Any], thread_id: str = "1") -> Dict[str, Any]:
+        """Execute workflow with persistence"""
+        app = self.workflow.compile(
+            checkpointer=self.checkpointer,
+            interrupt_before=self.interrupt_before
+        )
         
         # Initialize state
         initial_state = {
@@ -89,9 +99,15 @@ class WorkflowGraph:
             "output": None
         }
         
+        config = {"configurable": {"thread_id": thread_id}}
+        
         try:
             # Run the graph
-            final_state = await app.ainvoke(initial_state)
+            # If resuming, we don't pass initial_state, just config and None input (or new input)
+            # But for simplicity here, we always pass initial_state if starting fresh.
+            # LangGraph handles state merging.
+            
+            final_state = await app.ainvoke(initial_state, config=config)
             return {"success": True, "output": final_state}
         except Exception as e:
             return {"success": False, "error": str(e)}

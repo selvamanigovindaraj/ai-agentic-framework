@@ -26,6 +26,7 @@ dependencies = [
     "pydantic",
     "python-dotenv",
     "chromadb",
+    "docker",
     "pinecone-client",
     "redis",
     "aioredis",
