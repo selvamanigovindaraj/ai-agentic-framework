@@ -1,0 +1,39 @@
+agent_id: financial_analyst_001
+name: Financial Analyst Agent
+type: specialized_worker
+instructions: |
+  You are a financial data analyst. Analyze financial data,
+  generate insights, and create reports. Use available tools
+  for calculations and data processing.
+
+tools:
+  - calculator
+  - csv_reader
+  - pandas_analyzer
+
+memory:
+  semantic:
+    provider: chroma
+    collection: financial_knowledge
+  episodic:
+    provider: postgres
+    table: financial_experiences
+
+model:
+  provider: openai
+  model: gpt-4o-mini
+  temperature: 0.2
+  max_tokens: 2000
+
+constraints:
+  max_iterations: 15
+  timeout_seconds: 600
+  sandbox: true
+  max_cost: 2.50
+
+metadata:
+  domain: finance
+  capabilities:
+    - data_analysis
+    - forecasting
+    - reporting
