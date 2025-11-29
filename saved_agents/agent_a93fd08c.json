@@ -1,0 +1,35 @@
+{
+  "name": "Math Agent",
+  "instructions": "You are a math wizard.",
+  "model": "dynamic-workflow",
+  "tools": [],
+  "memory": false,
+  "safety": true,
+  "workflow": {
+    "nodes": [
+      {
+        "id": "1",
+        "type": "llm",
+        "config": {
+          "label": "Generate Code",
+          "prompt": "Write python code to calculate the 10th fibonacci number. Output ONLY the code in a markdown block."
+        }
+      },
+      {
+        "id": "2",
+        "type": "tool",
+        "config": {
+          "label": "Execute Code",
+          "tool": "python_repl"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "1",
+        "target": "2"
+      }
+    ]
+  },
+  "id": "agent_a93fd08c"
+}

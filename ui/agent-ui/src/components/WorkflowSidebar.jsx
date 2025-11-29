@@ -21,6 +21,14 @@ export default function WorkflowSidebar() {
             <div className="dndnode hitl" onDragStart={(event) => onDragStart(event, 'hitl')} draggable>
                 HITL Node
             </div>
+
+            <div className="dndnode router" onDragStart={(event) => onDragStart(event, 'router')} draggable style={{ borderColor: '#7928CA' }}>
+                Router Node
+            </div>
+
+            <div className="dndnode python" onDragStart={(event) => onDragStart(event, 'python_repl')} draggable style={{ borderColor: '#00C853' }}>
+                Python REPL
+            </div>
         </aside>
     );
 }
